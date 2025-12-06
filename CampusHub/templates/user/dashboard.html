@@ -1,0 +1,85 @@
+{% extends "layout.html" %}
+
+{% block title %}Dashboard - CampusHub{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto">
+    <div class="mb-8 flex items-center justify-between">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-800">Dashboard</h1>
+            <p class="text-gray-600 mt-1">Welcome back, <span class="font-semibold text-lamaPurple">{{ user.email
+                    }}</span></p>
+        </div>
+        <span class="px-4 py-2 rounded-full text-sm font-medium 
+            {% if user.role == 'admin' %}bg-red-100 text-red-800
+            {% elif user.role == 'teacher' %}bg-lamaPurpleLight text-lamaPurple
+            {% else %}bg-lamaSkyLight text-lamaSky{% endif %}">
+            {{ user.role.capitalize() }}
+        </span>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <!-- Events Card -->
+        <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 hover:shadow-md transition-shadow">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-gray-800">Events</h3>
+                <div class="w-8 h-8 rounded-full bg-lamaYellowLight flex items-center justify-center text-lamaYellow">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                </div>
+            </div>
+            <p class="text-gray-600 text-sm mb-4">Browse upcoming campus events.</p>
+            <a href="{{ url_for('event.list_events') }}"
+                class="inline-block w-full text-center px-4 py-2 bg-lamaYellow text-white rounded-lg hover:bg-yellow-400 transition-colors font-medium">
+                View Events
+            </a>
+        </div>
+
+        <!-- Profile Card -->
+        <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 hover:shadow-md transition-shadow">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-gray-800">Profile</h3>
+                <div class="w-8 h-8 rounded-full bg-lamaSkyLight flex items-center justify-center text-lamaSky">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                </div>
+            </div>
+            <p class="text-gray-600 text-sm mb-4">Manage your account settings.</p>
+            <a href="{{ url_for('user.profile') }}"
+                class="inline-block w-full text-center px-4 py-2 bg-lamaSky text-white rounded-lg hover:bg-blue-400 transition-colors font-medium">
+                Edit Profile
+            </a>
+        </div>
+
+        <!-- Quick Stats (Placeholder) -->
+        <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 hover:shadow-md transition-shadow">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-gray-800">Status</h3>
+                <div class="w-8 h-8 rounded-full bg-lamaPurpleLight flex items-center justify-center text-lamaPurple">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+            </div>
+            <div class="space-y-2">
+                <div class="flex justify-between text-sm">
+                    <span class="text-gray-600">Account Status</span>
+                    <span class="font-medium text-green-600">Active</span>
+                </div>
+                <div class="flex justify-between text-sm">
+                    <span class="text-gray-600">Member Since</span>
+                    <span class="font-medium text-gray-800">2025</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends "layout.html" %}
+
+{% block title %}Admin Register - CampusHub{% endblock %}
+
+{% block content %}
+<div class="flex items-center justify-center min-h-[80vh]">
+    <div class="bg-white p-8 rounded-xl shadow-md w-full max-w-md border border-gray-100">
+        <h2 class="text-2xl font-bold text-center mb-6 text-gray-800">Admin Registration</h2>
+        <form method="POST">
+            <div class="mb-4">
+                <label for="email" class="block text-gray-700 text-sm font-bold mb-2">Email Address</label>
+                <input type="email"
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    id="email" name="email" required>
+            </div>
+            <div class="mb-4">
+                <label for="password" class="block text-gray-700 text-sm font-bold mb-2">Password</label>
+                <input type="password"
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    id="password" name="password" required>
+            </div>
+            <div class="mb-6">
+                <label for="secret_key" class="block text-gray-700 text-sm font-bold mb-2">Secret Key</label>
+                <input type="password"
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    id="secret_key" name="secret_key" required placeholder="Enter admin secret key">
+            </div>
+            <button type="submit"
+                class="bg-lamaPurple hover:bg-indigo-400 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full transition-colors">Register
+                as Admin</button>
+        </form>
+        <p class="text-center mt-4 text-sm text-gray-600">
+            Not an admin? <a href="{{ url_for('auth.register') }}"
+                class="text-lamaSky hover:text-blue-500 font-medium">Student/Teacher Registration</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

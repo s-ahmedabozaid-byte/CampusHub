@@ -1,0 +1,129 @@
+{% extends "layout.html" %}
+
+{% block title %}Register - CampusHub{% endblock %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center py-12 px-4 relative">
+    <!-- Admin Register Button with Border -->
+    <div class="absolute top-8 left-8">
+        <a href="{{ url_for('auth.register_admin') }}"
+            class="px-4 py-2 border-2 border-gray-300 rounded-xl text-sm font-medium text-gray-600 hover:border-lamaPurple hover:text-lamaPurple transition-all duration-300 flex items-center gap-2 bg-white/50 backdrop-blur-sm hover:bg-white/70 hover:shadow-md">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+            </svg>
+            Admin Register
+        </a>
+    </div>
+
+    <div class="w-full max-w-md">
+        <!-- Glassmorphism Card -->
+        <div class="relative backdrop-blur-xl bg-white/70 rounded-3xl shadow-2xl border border-white/20 p-8">
+            <!-- Gradient Overlay -->
+            <div
+                class="absolute inset-0 bg-gradient-to-br from-lamaPurple/10 via-transparent to-lamaSky/10 rounded-3xl pointer-events-none">
+            </div>
+
+            <!-- Content -->
+            <div class="relative z-10">
+                <div class="text-center mb-8">
+                    <h1
+                        class="text-3xl font-bold bg-gradient-to-r from-lamaPurple to-lamaSky bg-clip-text text-transparent mb-2">
+                        Create Account
+                    </h1>
+                    <p class="text-gray-600 text-sm">Join CampusHub today</p>
+                </div>
+
+                <form method="POST" class="space-y-6">
+                    <!-- Email -->
+                    <div>
+                        <label for="email" class="block text-sm font-semibold text-gray-700 mb-2">
+                            Email Address
+                        </label>
+                        <input type="email" id="email" name="email" required class="w-full px-5 py-3 bg-white/50 backdrop-blur-sm border border-gray-200/50 rounded-2xl 
+                                   focus:outline-none focus:ring-2 focus:ring-lamaPurple/50 focus:border-transparent
+                                   transition-all duration-300 placeholder-gray-400
+                                   hover:bg-white/70 hover:shadow-md" placeholder="your.email@example.com">
+                    </div>
+
+                    <!-- Password -->
+                    <div>
+                        <label for="password" class="block text-sm font-semibold text-gray-700 mb-2">
+                            Password
+                        </label>
+                        <input type="password" id="password" name="password" required class="w-full px-5 py-3 bg-white/50 backdrop-blur-sm border border-gray-200/50 rounded-2xl 
+                                   focus:outline-none focus:ring-2 focus:ring-lamaPurple/50 focus:border-transparent
+                                   transition-all duration-300 placeholder-gray-400
+                                   hover:bg-white/70 hover:shadow-md" placeholder="••••••••">
+                    </div>
+
+                    <!-- Role Selection -->
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-3">
+                            I am a
+                        </label>
+                        <div class="grid grid-cols-2 gap-3">
+                            <!-- Student Button -->
+                            <label class="relative cursor-pointer">
+                                <input type="radio" name="role" value="student" required class="peer sr-only">
+                                <div class="px-5 py-4 bg-white/50 backdrop-blur-sm border-2 border-gray-200/50 rounded-2xl 
+                                            text-center font-medium text-gray-600
+                                            peer-checked:border-lamaSky peer-checked:bg-lamaSky/10 peer-checked:text-lamaSky
+                                            hover:bg-white/70 hover:shadow-md
+                                            transition-all duration-300">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mx-auto mb-2" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                                    </svg>
+                                    Student
+                                </div>
+                            </label>
+
+                            <!-- Teacher Button -->
+                            <label class="relative cursor-pointer">
+                                <input type="radio" name="role" value="teacher" required class="peer sr-only">
+                                <div class="px-5 py-4 bg-white/50 backdrop-blur-sm border-2 border-gray-200/50 rounded-2xl 
+                                            text-center font-medium text-gray-600
+                                            peer-checked:border-lamaPurple peer-checked:bg-lamaPurple/10 peer-checked:text-lamaPurple
+                                            hover:bg-white/70 hover:shadow-md
+                                            transition-all duration-300">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mx-auto mb-2" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                                    </svg>
+                                    Teacher
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="w-full px-8 py-4 bg-gradient-to-r from-lamaPurple to-lamaSky text-white font-semibold rounded-2xl
+                               shadow-lg hover:shadow-xl transform hover:-translate-y-0.5
+                               transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-lamaPurple/50">
+                        Create Account
+                    </button>
+
+                    <!-- Login Link -->
+                    <p class="text-center text-sm text-gray-600">
+                        Already have an account?
+                        <a href="{{ url_for('auth.login') }}"
+                            class="font-medium text-lamaSky hover:text-blue-500 transition-colors">
+                            Login
+                        </a>
+                    </p>
+                </form>
+            </div>
+        </div>
+
+        <!-- Decorative Elements -->
+        <div class="absolute top-0 left-0 w-72 h-72 bg-lamaPurple/20 rounded-full filter blur-3xl opacity-30 -z-10">
+        </div>
+        <div class="absolute bottom-0 right-0 w-96 h-96 bg-lamaSky/20 rounded-full filter blur-3xl opacity-30 -z-10">
+        </div>
+    </div>
+</div>
+{% endblock %}
