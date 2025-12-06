@@ -1,0 +1,95 @@
+{% extends "layout.html" %}
+
+{% block title %}Events - CampusHub{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto">
+    <div class="flex items-center justify-between mb-8">
+        <h1 class="text-3xl font-bold text-gray-800">Events</h1>
+        {% if current_user.role in ['admin', 'teacher', 'instructor'] %}
+        <a href="{{ url_for('event.create_event') }}"
+            class="bg-lamaPurple text-white px-4 py-2 rounded-lg hover:bg-indigo-600 transition-colors font-medium flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+            </svg>
+            Create Event
+        </a>
+        {% endif %}
+    </div>
+
+    {% if events %}
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for event in events %}
+        <a href="{{ url_for('event.event_details', event_id=event.id) }}" class="block group">
+            <div
+                class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all duration-300 flex flex-col h-full">
+                <div class="p-6 flex-1">
+                    <div class="flex justify-between items-start mb-4">
+                        <span class="px-3 py-1 rounded-full text-xs font-medium bg-lamaSkyLight text-lamaSky">
+                            {{ event.date.strftime('%b %d, %Y') }}
+                        </span>
+                        {% if not event.is_approved %}
+                        <span class="px-2 py-1 rounded text-xs font-bold bg-yellow-100 text-yellow-800">Pending</span>
+                        {% endif %}
+                    </div>
+
+                    <h3 class="text-xl font-bold text-gray-800 mb-2 group-hover:text-lamaPurple transition-colors">{{
+                        event.title }}</h3>
+                    <p class="text-gray-600 text-sm mb-4 line-clamp-3">{{ event.description }}</p>
+
+                    <div class="flex items-center text-gray-500 text-sm mb-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M17.657 16.657L13 21.314 8.343 16.657a8 8 0 0011.314 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        {{ event.location }}
+                    </div>
+                    <div class="flex items-center text-gray-500 text-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        {{ event.date.strftime('%H:%M') }}
+                    </div>
+                </div>
+
+                <div class="p-4 bg-gray-50 border-t border-gray-100 flex justify-between items-center">
+                    <div class="text-xs text-gray-500">
+                        By <span class="font-medium text-gray-700">{{ event.creator.email }}</span>
+                    </div>
+
+                    <div class="flex items-center gap-2">
+                        {% if current_user not in event.attendees %}
+                        <span class="px-3 py-1 bg-lamaSky/10 text-lamaSky text-xs rounded-full font-medium">
+                            {{ event.attendees|length }} / {{ event.capacity }}
+                        </span>
+                        {% else %}
+                        <span
+                            class="px-3 py-1 bg-green-100 text-green-700 text-xs rounded-full font-medium">Registered</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center py-12 bg-white rounded-xl shadow-sm border border-gray-100">
+        <div class="text-gray-400 mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+        </div>
+        <h3 class="text-lg font-medium text-gray-900">No events found</h3>
+        <p class="text-gray-500 mt-1">Check back later for upcoming campus events.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

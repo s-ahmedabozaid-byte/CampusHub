@@ -1,0 +1,116 @@
+{% extends "layout.html" %}
+
+{% block title %}Create Event - CampusHub{% endblock %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center py-12 px-4">
+    <div class="w-full max-w-2xl">
+        <!-- Glassmorphism Card -->
+        <div class="relative backdrop-blur-xl bg-white/70 rounded-3xl shadow-2xl border border-white/20 p-8 md:p-12">
+            <!-- Gradient Overlay for Depth -->
+            <div
+                class="absolute inset-0 bg-gradient-to-br from-lamaPurple/10 via-transparent to-lamaSky/10 rounded-3xl pointer-events-none">
+            </div>
+
+            <!-- Content -->
+            <div class="relative z-10">
+                <div class="text-center mb-8">
+                    <h1
+                        class="text-4xl font-bold bg-gradient-to-r from-lamaPurple to-lamaSky bg-clip-text text-transparent mb-2">
+                        Create New Event
+                    </h1>
+                    <p class="text-gray-600">Fill in the details to create an amazing event</p>
+                </div>
+
+                <form method="POST" class="space-y-6">
+                    <!-- Event Title -->
+                    <div class="group">
+                        <label for="title" class="block text-sm font-semibold text-gray-700 mb-2">
+                            Event Title
+                        </label>
+                        <input type="text" id="title" name="title" required class="w-full px-5 py-4 bg-white/50 backdrop-blur-sm border border-gray-200/50 rounded-2xl 
+                                   focus:outline-none focus:ring-2 focus:ring-lamaPurple/50 focus:border-transparent
+                                   transition-all duration-300 placeholder-gray-400
+                                   hover:bg-white/70 hover:shadow-md" placeholder="Enter event title">
+                    </div>
+
+                    <!-- Description -->
+                    <div class="group">
+                        <label for="description" class="block text-sm font-semibold text-gray-700 mb-2">
+                            Description
+                        </label>
+                        <textarea id="description" name="description" rows="5" required class="w-full px-5 py-4 bg-white/50 backdrop-blur-sm border border-gray-200/50 rounded-2xl 
+                                   focus:outline-none focus:ring-2 focus:ring-lamaPurple/50 focus:border-transparent
+                                   transition-all duration-300 placeholder-gray-400 resize-none
+                                   hover:bg-white/70 hover:shadow-md" placeholder="Describe your event..."></textarea>
+                    </div>
+
+                    <!-- Date, Time & Capacity Grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Date & Time -->
+                        <div class="group">
+                            <label for="date" class="block text-sm font-semibold text-gray-700 mb-2">
+                                Date & Time
+                            </label>
+                            <input type="datetime-local" id="date" name="date" required class="w-full px-5 py-4 bg-white/50 backdrop-blur-sm border border-gray-200/50 rounded-2xl 
+                                       focus:outline-none focus:ring-2 focus:ring-lamaPurple/50 focus:border-transparent
+                                       transition-all duration-300
+                                       hover:bg-white/70 hover:shadow-md">
+                        </div>
+
+                        <!-- Capacity -->
+                        <div class="group">
+                            <label for="capacity" class="block text-sm font-semibold text-gray-700 mb-2">
+                                Capacity
+                            </label>
+                            <input type="number" id="capacity" name="capacity" min="1" value="3" required class="w-full px-5 py-4 bg-white/50 backdrop-blur-sm border border-gray-200/50 rounded-2xl 
+                                       focus:outline-none focus:ring-2 focus:ring-lamaPurple/50 focus:border-transparent
+                                       transition-all duration-300
+                                       hover:bg-white/70 hover:shadow-md" placeholder="Max attendees">
+                        </div>
+                    </div>
+
+                    <!-- Location -->
+                    <div class="group">
+                        <label for="location" class="block text-sm font-semibold text-gray-700 mb-2">
+                            Location
+                        </label>
+                        <input type="text" id="location" name="location" required class="w-full px-5 py-4 bg-white/50 backdrop-blur-sm border border-gray-200/50 rounded-2xl 
+                                   focus:outline-none focus:ring-2 focus:ring-lamaPurple/50 focus:border-transparent
+                                   transition-all duration-300 placeholder-gray-400
+                                   hover:bg-white/70 hover:shadow-md" placeholder="Event location">
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex flex-col sm:flex-row gap-4 pt-6">
+                        <button type="submit"
+                            class="flex-1 px-8 py-4 bg-gradient-to-r from-lamaPurple to-lamaSky text-white font-semibold rounded-2xl
+                                   shadow-lg hover:shadow-xl transform hover:-translate-y-0.5
+                                   transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-lamaPurple/50">
+                            <span class="flex items-center justify-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 4v16m8-8H4" />
+                                </svg>
+                                Create Event
+                            </span>
+                        </button>
+                        <a href="{{ url_for('event.list_events') }}" class="flex-1 px-8 py-4 bg-white/50 backdrop-blur-sm border border-gray-200/50 text-gray-700 font-semibold rounded-2xl
+                                   text-center hover:bg-white/70 hover:shadow-md
+                                   transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-gray-300/50">
+                            Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Decorative Elements -->
+        <div class="absolute top-0 left-0 w-72 h-72 bg-lamaPurple/20 rounded-full filter blur-3xl opacity-30 -z-10">
+        </div>
+        <div class="absolute bottom-0 right-0 w-96 h-96 bg-lamaSky/20 rounded-full filter blur-3xl opacity-30 -z-10">
+        </div>
+    </div>
+</div>
+{% endblock %}
