@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Announcements</title>
+</head>
+<body>
+    <h2>Announcements</h2>
+    {% for ann in announcements %}
+    <div class="box">
+        <h3>{{ ann.title }}</h3>
+        <p>{{ ann.content }}</p>
+        <small>By {{ ann.instructor_name }} on {{ ann.created_at }}</small>
+        <hr>
+    </div>
+    {% endfor %}
+</body>
+</html>
