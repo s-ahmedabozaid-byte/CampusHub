@@ -1,0 +1,168 @@
+{% extends "layout.html" %}
+
+{% block title %}{{ event.title }} - CampusHub{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto">
+    <!-- Back Button -->
+    <div class="mb-6">
+        <a href="{{ url_for('event.list_events') }}"
+            class="inline-flex items-center gap-2 px-4 py-2 bg-white/50 backdrop-blur-sm border border-gray-200/50 rounded-xl text-gray-700 hover:bg-white/70 hover:shadow-md transition-all duration-300">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            </svg>
+            Back to Events
+        </a>
+    </div>
+
+    <!-- Event Details Card -->
+    <div class="relative backdrop-blur-xl bg-white/70 rounded-3xl shadow-2xl border border-white/20 p-8 md:p-12">
+        <!-- Gradient Overlay -->
+        <div
+            class="absolute inset-0 bg-gradient-to-br from-lamaPurple/10 via-transparent to-lamaSky/10 rounded-3xl pointer-events-none">
+        </div>
+
+        <!-- Content -->
+        <div class="relative z-10">
+            <!-- Header -->
+            <div class="mb-8">
+                <div class="flex items-start justify-between mb-4">
+                    <div class="flex-1">
+                        <h1
+                            class="text-4xl font-bold bg-gradient-to-r from-lamaPurple to-lamaSky bg-clip-text text-transparent mb-3">
+                            {{ event.title }}
+                        </h1>
+                        {% if not event.is_approved %}
+                        <span
+                            class="inline-block px-3 py-1 rounded-full text-xs font-bold bg-yellow-100 text-yellow-800">
+                            Pending Approval
+                        </span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Event Info Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <!-- Date & Time -->
+                    <div
+                        class="flex items-center gap-3 p-4 bg-white/50 backdrop-blur-sm rounded-2xl border border-gray-200/50">
+                        <div class="w-12 h-12 rounded-xl bg-lamaSkyLight flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-lamaSky" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-xs text-gray-500 font-medium">Date & Time</p>
+                            <p class="text-sm font-semibold text-gray-800">{{ event.date.strftime('%b %d, %Y') }}</p>
+                            <p class="text-xs text-gray-600">{{ event.date.strftime('%H:%M') }}</p>
+                        </div>
+                    </div>
+
+                    <!-- Location -->
+                    <div
+                        class="flex items-center gap-3 p-4 bg-white/50 backdrop-blur-sm rounded-2xl border border-gray-200/50">
+                        <div class="w-12 h-12 rounded-xl bg-lamaPurpleLight flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-lamaPurple" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-xs text-gray-500 font-medium">Location</p>
+                            <p class="text-sm font-semibold text-gray-800">{{ event.location }}</p>
+                        </div>
+                    </div>
+
+                    <!-- Capacity -->
+                    <div
+                        class="flex items-center gap-3 p-4 bg-white/50 backdrop-blur-sm rounded-2xl border border-gray-200/50">
+                        <div class="w-12 h-12 rounded-xl bg-lamaYellowLight flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-lamaYellow" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-xs text-gray-500 font-medium">Attendees</p>
+                            <p class="text-sm font-semibold text-gray-800">{{ event.attendees|length }} / {{
+                                event.capacity }}</p>
+                            {% if event.capacity and event.attendees|length >= event.capacity %}
+                            <p class="text-xs text-red-600 font-medium">Full</p>
+                            {% else %}
+                            <p class="text-xs text-green-600 font-medium">Available</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Description -->
+            <div class="mb-8">
+                <h2 class="text-xl font-bold text-gray-800 mb-3">About This Event</h2>
+                <p class="text-gray-600 leading-relaxed">{{ event.description }}</p>
+            </div>
+
+            <!-- Organizer -->
+            <div class="mb-8 p-4 bg-white/50 backdrop-blur-sm rounded-2xl border border-gray-200/50">
+                <p class="text-sm text-gray-500 mb-1">Organized by</p>
+                <p class="text-base font-semibold text-gray-800">{{ event.creator.email }}</p>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex flex-col sm:flex-row gap-4">
+                {% if current_user.role == 'admin' %}
+                {% if not event.is_approved %}
+                <form action="{{ url_for('event.approve_event', event_id=event.id) }}" method="POST" class="flex-1">
+                    <button type="submit"
+                        class="w-full px-8 py-4 bg-gradient-to-r from-green-500 to-green-600 text-white font-semibold rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300">
+                        Approve Event
+                    </button>
+                </form>
+                {% endif %}
+                <form action="{{ url_for('event.delete_event', event_id=event.id) }}" method="POST"
+                    onsubmit="return confirm('Delete this event?');" class="flex-1">
+                    <button type="submit"
+                        class="w-full px-8 py-4 bg-gradient-to-r from-red-500 to-red-600 text-white font-semibold rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300">
+                        Delete Event
+                    </button>
+                </form>
+                {% else %}
+                {% if current_user not in event.attendees %}
+                {% if event.capacity and event.attendees|length >= event.capacity %}
+                <button disabled
+                    class="flex-1 px-8 py-4 bg-gray-300 text-gray-500 font-semibold rounded-2xl cursor-not-allowed">
+                    Event Full
+                </button>
+                {% else %}
+                <form action="{{ url_for('event.register_event', event_id=event.id) }}" method="POST" class="flex-1">
+                    <button type="submit"
+                        class="w-full px-8 py-4 bg-gradient-to-r from-lamaPurple to-lamaSky text-white font-semibold rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300">
+                        Register for Event
+                    </button>
+                </form>
+                {% endif %}
+                {% else %}
+                <form action="{{ url_for('event.unregister_event', event_id=event.id) }}" method="POST" class="flex-1">
+                    <button type="submit"
+                        class="w-full px-8 py-4 bg-white/50 backdrop-blur-sm border-2 border-gray-300 text-gray-700 font-semibold rounded-2xl hover:bg-white/70 hover:shadow-md transition-all duration-300">
+                        Unregister
+                    </button>
+                </form>
+                {% endif %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Decorative Elements -->
+    <div class="absolute top-0 left-0 w-72 h-72 bg-lamaPurple/20 rounded-full filter blur-3xl opacity-30 -z-10"></div>
+    <div class="absolute bottom-0 right-0 w-96 h-96 bg-lamaSky/20 rounded-full filter blur-3xl opacity-30 -z-10"></div>
+</div>
+{% endblock %}
