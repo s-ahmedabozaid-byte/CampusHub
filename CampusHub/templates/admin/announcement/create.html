@@ -1,0 +1,92 @@
+{% extends "layout.html" %}
+
+{% block title %}Create Announcement - CampusHub{% endblock %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center py-12 px-4">
+    <div class="w-full max-w-3xl">
+        <!-- Glassmorphism Card -->
+        <div class="relative backdrop-blur-xl bg-white/70 rounded-3xl shadow-2xl border border-white/20 p-8 md:p-12">
+            <!-- Gradient Overlay -->
+            <div
+                class="absolute inset-0 bg-gradient-to-br from-lamaPurple/10 via-transparent to-lamaSky/10 rounded-3xl pointer-events-none">
+            </div>
+
+            <!-- Content -->
+            <div class="relative z-10">
+                <!-- Header -->
+                <div class="text-center mb-8">
+                    <h1
+                        class="text-4xl font-bold bg-gradient-to-r from-lamaPurple to-lamaSky bg-clip-text text-transparent mb-2">
+                        Create Announcement
+                    </h1>
+                    <p class="text-gray-600">Share important information with all users</p>
+                </div>
+
+                <form method="POST" class="space-y-6">
+                    <!-- Title -->
+                    <div class="group">
+                        <label for="title" class="block text-sm font-semibold text-gray-700 mb-2">
+                            Title
+                        </label>
+                        <input type="text" id="title" name="title" required class="w-full px-5 py-4 bg-white/50 backdrop-blur-sm border border-gray-200/50 rounded-2xl 
+                                   focus:outline-none focus:ring-2 focus:ring-lamaPurple/50 focus:border-transparent
+                                   transition-all duration-300 placeholder-gray-400
+                                   hover:bg-white/70 hover:shadow-md" placeholder="Enter announcement title">
+                    </div>
+
+                    <!-- Content -->
+                    <div class="group">
+                        <label for="content" class="block text-sm font-semibold text-gray-700 mb-2">
+                            Content
+                        </label>
+                        <textarea id="content" name="content" rows="8" required class="w-full px-5 py-4 bg-white/50 backdrop-blur-sm border border-gray-200/50 rounded-2xl 
+                                   focus:outline-none focus:ring-2 focus:ring-lamaPurple/50 focus:border-transparent
+                                   transition-all duration-300 placeholder-gray-400 resize-none
+                                   hover:bg-white/70 hover:shadow-md"
+                            placeholder="Write your announcement content..."></textarea>
+                    </div>
+
+                    <!-- Published Checkbox -->
+                    <div
+                        class="flex items-center p-4 bg-white/50 backdrop-blur-sm rounded-2xl border border-gray-200/50">
+                        <input type="checkbox" id="is_published" name="is_published" checked
+                            class="w-5 h-5 text-lamaPurple border-gray-300 rounded focus:ring-lamaPurple/50">
+                        <label for="is_published" class="ml-3 text-sm font-medium text-gray-700">
+                            Publish immediately
+                        </label>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex flex-col sm:flex-row gap-4 pt-6">
+                        <button type="submit"
+                            class="flex-1 px-8 py-4 bg-gradient-to-r from-lamaPurple to-lamaSky text-white font-semibold rounded-2xl
+                                   shadow-lg hover:shadow-xl transform hover:-translate-y-0.5
+                                   transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-lamaPurple/50">
+                            <span class="flex items-center justify-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
+                                </svg>
+                                Create Announcement
+                            </span>
+                        </button>
+                        <a href="{{ url_for('announcement.admin_list') }}" class="flex-1 px-8 py-4 bg-white/50 backdrop-blur-sm border border-gray-200/50 text-gray-700 font-semibold rounded-2xl
+                                   text-center hover:bg-white/70 hover:shadow-md
+                                   transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-gray-300/50">
+                            Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Decorative Elements -->
+        <div class="absolute top-0 left-0 w-72 h-72 bg-lamaPurple/20 rounded-full filter blur-3xl opacity-30 -z-10">
+        </div>
+        <div class="absolute bottom-0 right-0 w-96 h-96 bg-lamaSky/20 rounded-full filter blur-3xl opacity-30 -z-10">
+        </div>
+    </div>
+</div>
+{% endblock %}
