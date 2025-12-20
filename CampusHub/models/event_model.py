@@ -24,3 +24,15 @@ class Event(db.Model):
     
     # Relationship: Attendees (Many-to-Many)
     attendees = db.relationship('User', secondary=event_registrations, backref=db.backref('registered_events', lazy='dynamic'))
+
+    @property
+    def attendee_count(self):
+        """Return the number of attendees."""
+        return len(self.attendees)
+
+    @property
+    def is_full(self):
+        """Check if the event has reached its maximum capacity."""
+        if self.capacity is None:
+            return False
+        return self.attendee_count >= self.capacity
