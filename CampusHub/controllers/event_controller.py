@@ -9,10 +9,10 @@ from datetime import datetime
 event_bp = Blueprint('event', __name__)
 
 @event_bp.route('/')
-@login_required
+@event_bp.route('/')
 def list_events():
     # Admins see all events, others see only approved events
-    if current_user.role == 'admin':
+    if current_user.is_authenticated and current_user.role == 'admin':
         events = Event.query.order_by(Event.date.asc()).all()
     else:
         events = Event.query.filter_by(is_approved=True).order_by(Event.date.asc()).all()
@@ -64,8 +64,8 @@ def register_event(event_id):
         flash('You are already registered for this event.')
     else:
         # Check capacity
-        if event.capacity and len(event.attendees) >= event.capacity:
-            flash('The event is full!', 'error')
+        if event.is_full:
+            flash('Sorry, this event has reached its maximum capacity.', 'error')
         else:
             event.attendees.append(current_user)
             db.session.commit()
