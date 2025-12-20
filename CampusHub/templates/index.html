@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="refresh"
+        content="0; url={% if current_user.is_authenticated %}{{ url_for('user.dashboard') }}{% else %}{{ url_for('auth.login') }}{% endif %}" />
+    <title>Redirecting...</title>
+</head>
+
+<body>
+    <p>If you are not redirected automatically, follow this <a
+            href="{% if current_user.is_authenticated %}{{ url_for('user.dashboard') }}{% else %}{{ url_for('auth.login') }}{% endif %}">link</a>.
+    </p>
+</body>
+
+</html>
