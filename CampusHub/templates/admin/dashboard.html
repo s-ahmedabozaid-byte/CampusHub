@@ -63,6 +63,26 @@
         </div>
     </div>
 
+    <!-- Second Row Stats -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <!-- Total Feedbacks -->
+        <div class="bg-gradient-to-br from-pink-400 to-pink-600 rounded-xl shadow-lg p-6 text-white">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-pink-100">Total Feedbacks</p>
+                    <p class="text-4xl font-bold mt-2">{{ total_feedbacks }}</p>
+                </div>
+                <div class="bg-white/20 p-3 rounded-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Management Cards -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
         <!-- Events Management -->
@@ -93,7 +113,51 @@
         <div class="bg-white rounded-xl shadow-sm p-6 border-l-4 border-lamaYellow hover:shadow-md transition-shadow">
             <h3 class="text-xl font-semibold text-gray-800 mb-2">Reports</h3>
             <p class="text-gray-600 text-sm mb-4">View system analytics and reports.</p>
-            <a href="#" class="text-lamaYellow font-medium hover:underline">View Reports &rarr;</a>
+            <a href="{{ url_for('admin.reports') }}" class="text-lamaYellow font-medium hover:underline">View Reports
+                &rarr;</a>
+        </div>
+    </div>
+
+    <!-- Feedback Section -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mb-8">
+        <div class="p-6 border-b border-gray-100">
+            <h3 class="text-lg font-bold text-gray-800">Recent Feedback</h3>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="w-full text-left">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 font-semibold text-gray-600">Date</th>
+                        <th class="px-6 py-3 font-semibold text-gray-600">User</th>
+                        <th class="px-6 py-3 font-semibold text-gray-600">Category</th>
+                        <th class="px-6 py-3 font-semibold text-gray-600">Message</th>
+                        <th class="px-6 py-3 font-semibold text-gray-600">Action</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                    {% for f in feedbacks %}
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{
+                            f.created_at.strftime('%Y-%m-%d') }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ f.user.email if f.user else
+                            'Anonymous' }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ f.category }}</td>
+                        <td class="px-6 py-4 text-sm text-gray-500">{{ f.message }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <form action="{{ url_for('admin.delete_feedback', feedback_id=f.id) }}" method="POST"
+                                onsubmit="return confirm('Delete?');">
+                                <button type="submit" class="text-red-600 hover:text-red-900">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="5" class="px-6 py-4 text-center text-sm text-gray-500">No recent feedback found.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
 

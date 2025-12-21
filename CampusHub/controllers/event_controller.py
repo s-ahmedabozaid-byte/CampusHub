@@ -1,7 +1,8 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request, abort
 from flask_login import login_required, current_user
-from CampusHub.models.event_model import Event
+from CampusHub.models.event_model import Event, Interest
 from CampusHub.models.notification_model import Notification
+from CampusHub.models.review_model import Review
 from CampusHub.extensions import db
 from CampusHub.helpers import log_activity
 from datetime import datetime
@@ -132,3 +133,44 @@ def delete_event(event_id):
     flash(f'Event "{event_title}" has been deleted.')
     
     return redirect(url_for('event.list_events'))
+
+@event_bp.route('/<int:event_id>/like', methods=['POST'])
+@login_required
+def like_event(event_id):
+    event = Event.query.get_or_404(event_id)
+    interest = Interest.query.filter_by(user_id=current_user.id, event_id=event_id).first()
+    
+    if interest:
+        db.session.delete(interest)
+        flash('Unliked event.', 'info')
+    else:
+        new_interest = Interest(user_id=current_user.id, event_id=event_id)
+        db.session.add(new_interest)
+        flash('Liked event!', 'success')
+        
+    db.session.commit()
+    return redirect(url_for('event.event_details', event_id=event_id))
+
+@event_bp.route('/<int:event_id>/review', methods=['POST'])
+@login_required
+def review_event(event_id):
+    event = Event.query.get_or_404(event_id)
+    
+    # Check if event date has passed
+    if event.date > datetime.now():
+        flash('You can only review past events.', 'error')
+        return redirect(url_for('event.event_details', event_id=event_id))
+        
+    rating = request.form.get('rating')
+    comment = request.form.get('comment')
+    
+    if not rating:
+        flash('Rating is required.', 'error')
+        return redirect(url_for('event.event_details', event_id=event_id))
+        
+    review = Review(user_id=current_user.id, event_id=event_id, rating=int(rating), comment=comment)
+    db.session.add(review)
+    db.session.commit()
+    
+    flash('Review submitted!', 'success')
+    return redirect(url_for('event.event_details', event_id=event_id))

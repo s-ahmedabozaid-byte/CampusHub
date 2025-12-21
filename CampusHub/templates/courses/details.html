@@ -1,0 +1,260 @@
+{% extends "layout.html" %}
+
+{% block title %}{{ course.title }} - CampusHub{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto">
+    <!-- Header -->
+    <div class="mb-8">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+            <div>
+                <div class="flex items-center gap-3 mb-2">
+                    <span
+                        class="px-3 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full border border-green-200 uppercase tracking-wide">
+                        {{ course.code }}
+                    </span>
+                    <span
+                        class="px-3 py-1 bg-blue-100 text-blue-700 text-xs font-bold rounded-full border border-blue-200">
+                        {{ course.status }}
+                    </span>
+                </div>
+                <h1 class="text-3xl font-bold text-gray-800">{{ course.title }}</h1>
+                <p class="text-gray-600 mt-2 text-lg">{{ course.description }}</p>
+            </div>
+            {% if not is_enrolled and current_user.role == 'student' %}
+            <form action="{{ url_for('course.enroll', course_id=course.id) }}" method="POST">
+                <button type="submit"
+                    class="px-6 py-3 bg-lamaPurple text-white rounded-xl hover:bg-indigo-600 shadow-lg font-semibold transition-all hover:-translate-y-0.5">
+                    Enroll Now
+                </button>
+            </form>
+            {% elif is_enrolled %}
+            <span
+                class="px-6 py-3 bg-green-50 text-green-700 border border-green-200 rounded-xl font-semibold flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd"
+                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                        clip-rule="evenodd" />
+                </svg>
+                Enrolled
+            </span>
+            {% endif %}
+        </div>
+
+        <!-- Instructor Info -->
+        <div class="flex items-center gap-3 p-4 bg-white rounded-xl border border-gray-100 shadow-sm w-fit">
+            <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center font-bold text-gray-600">
+                {{ course.instructor.username[0].upper() if course.instructor.username else 'I' }}
+            </div>
+            <div>
+                <p class="text-xs text-gray-500 font-semibold uppercase">Instructor</p>
+                <p class="text-sm font-medium text-gray-800">{{ course.instructor.username or course.instructor.email }}
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="mb-8 border-b border-gray-200" x-data="{ activeTab: 'overview' }">
+        <ul class="flex flex-wrap -mb-px text-sm font-medium text-center text-gray-500">
+            <li class="mr-2">
+                <button onclick="switchTab('overview')" id="tab-overview"
+                    class="inline-block p-4 border-b-2 border-lamaPurple text-lamaPurple rounded-t-lg active hover:text-lamaPurple hover:border-lamaPurple transition-all">Overview</button>
+            </li>
+            <li class="mr-2">
+                <button onclick="switchTab('assignments')" id="tab-assignments"
+                    class="inline-block p-4 border-b-2 border-transparent hover:text-gray-600 hover:border-gray-300 rounded-t-lg transition-all">
+                    Assignments
+                    <span class="ml-2 bg-gray-100 text-gray-600 py-0.5 px-2 rounded-full text-xs">{{
+                        course.assignments|length }}</span>
+                </button>
+            </li>
+            <li class="mr-2">
+                <button onclick="switchTab('materials')" id="tab-materials"
+                    class="inline-block p-4 border-b-2 border-transparent hover:text-gray-600 hover:border-gray-300 rounded-t-lg transition-all">Materials</button>
+            </li>
+            <li class="mr-2">
+                <button onclick="switchTab('students')" id="tab-students"
+                    class="inline-block p-4 border-b-2 border-transparent hover:text-gray-600 hover:border-gray-300 rounded-t-lg transition-all">
+                    Students
+                    <span class="ml-2 bg-gray-100 text-gray-600 py-0.5 px-2 rounded-full text-xs">{{
+                        course.enrollment_count }}</span>
+                </button>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Tab Contents -->
+    <div id="content-overview" class="tab-content block">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Stats -->
+            <div class="col-span-2 space-y-6">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div class="p-6 bg-white rounded-2xl shadow-sm border border-gray-100">
+                        <p class="text-sm text-gray-500 mb-1">Total Students</p>
+                        <p class="text-3xl font-bold text-gray-800">{{ course.enrollment_count }}</p>
+                    </div>
+                    <div class="p-6 bg-white rounded-2xl shadow-sm border border-gray-100">
+                        <p class="text-sm text-gray-500 mb-1">Assignments</p>
+                        <p class="text-3xl font-bold text-gray-800">{{ course.assignments|length }}</p>
+                    </div>
+                    <div class="p-6 bg-white rounded-2xl shadow-sm border border-gray-100">
+                        <p class="text-sm text-gray-500 mb-1">Materials</p>
+                        <p class="text-3xl font-bold text-gray-800">{{ course.materials_count }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="content-assignments" class="tab-content hidden">
+        <div class="flex justify-between items-center mb-6">
+            <h3 class="text-xl font-bold text-gray-800">Assignments</h3>
+            {% if current_user.role == 'instructor' and course.instructor_id == current_user.id %}
+            <button onclick="document.getElementById('assignmentModal').classList.remove('hidden')"
+                class="px-4 py-2 bg-lamaPurple text-white rounded-lg hover:bg-indigo-600 text-sm font-medium shadow-md transition-all">
+                + Create Assignment
+            </button>
+            {% endif %}
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for assignment in course.assignments %}
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="p-3 bg-lamaPurpleLight text-lamaPurple rounded-xl">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                    </div>
+                    {% if assignment.due_date %}
+                    <span class="text-xs font-semibold px-2 py-1 bg-gray-100 text-gray-600 rounded-md">
+                        Due {{ assignment.due_date.strftime('%b %d') }}
+                    </span>
+                    {% endif %}
+                </div>
+                <h4 class="text-lg font-bold text-gray-800 mb-2">{{ assignment.title }}</h4>
+                <p class="text-gray-600 text-sm mb-4 line-clamp-2">{{ assignment.description }}</p>
+                <div class="pt-4 border-t border-gray-50 flex justify-between items-center">
+                    <span class="text-xs text-gray-500">0 Submissions</span>
+                    <button class="text-lamaPurple text-sm font-medium hover:underline">View Details</button>
+                </div>
+            </div>
+            {% else %}
+            <div class="col-span-full text-center py-12 bg-white rounded-2xl border border-gray-100 border-dashed">
+                <p class="text-gray-500">No assignments yet.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div id="content-students" class="tab-content hidden">
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+            <div class="p-6 border-b border-gray-100">
+                <h3 class="text-lg font-bold text-gray-800">Enrolled Students</h3>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-4 font-semibold text-gray-600 text-sm">Student</th>
+                            <th class="px-6 py-4 font-semibold text-gray-600 text-sm">Email</th>
+                            <th class="px-6 py-4 font-semibold text-gray-600 text-sm">Enrolled Date</th>
+                            <th class="px-6 py-4 font-semibold text-gray-600 text-sm">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100">
+                        {% for student in course.students %}
+                        <tr class="hover:bg-gray-50 transition-colors">
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-3">
+                                    <div
+                                        class="w-8 h-8 rounded-full bg-lamaSkyLight text-lamaSky flex items-center justify-center font-bold text-xs">
+                                        {{ student.email[0].upper() }}
+                                    </div>
+                                    <span class="font-medium text-gray-900">{{ student.username or 'Student' }}</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 text-sm text-gray-600">{{ student.email }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-500">2025-01-01</td>
+                            <td class="px-6 py-4">
+                                <span
+                                    class="px-2 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full">Active</span>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="4" class="px-6 py-8 text-center text-gray-500">No students enrolled yet.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="content-materials" class="tab-content hidden">
+        <div class="text-center py-12 bg-white rounded-2xl border border-gray-100 border-dashed">
+            <p class="text-gray-500">No materials uploaded yet.</p>
+        </div>
+    </div>
+</div>
+
+<!-- Create Assignment Modal -->
+<div id="assignmentModal"
+    class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl">
+        <div class="p-6 border-b border-gray-100 flex justify-between items-center">
+            <h3 class="text-xl font-bold text-gray-800">Create Assignment</h3>
+            <button onclick="document.getElementById('assignmentModal').classList.add('hidden')"
+                class="text-gray-400 hover:text-gray-600">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+        <form action="{{ url_for('course.create_assignment', course_id=course.id) }}" method="POST"
+            class="p-6 space-y-4">
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-1">Calculus Assignment Title</label>
+                <input type="text" name="title" required
+                    class="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-lamaPurple/50">
+            </div>
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-1">Description</label>
+                <textarea name="description" rows="3"
+                    class="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-lamaPurple/50"></textarea>
+            </div>
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-1">Due Date</label>
+                <input type="date" name="due_date"
+                    class="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-lamaPurple/50">
+            </div>
+            <div class="pt-4 flex gap-3">
+                <button type="button" onclick="document.getElementById('assignmentModal').classList.add('hidden')"
+                    class="flex-1 px-4 py-2 border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50 font-medium">Cancel</button>
+                <button type="submit"
+                    class="flex-1 px-4 py-2 bg-lamaPurple text-white rounded-lg hover:bg-indigo-600 font-medium shadow-md">Create</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function switchTab(tabName) {
+        // Hide all contents
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+        // Show active content
+        document.getElementById('content-' + tabName).classList.remove('hidden');
+
+        // Update tab styles
+        document.querySelectorAll('ul button').forEach(el => {
+            el.className = 'inline-block p-4 border-b-2 border-transparent hover:text-gray-600 hover:border-gray-300 rounded-t-lg transition-all';
+        });
+        document.getElementById('tab-' + tabName).className = 'inline-block p-4 border-b-2 border-lamaPurple text-lamaPurple rounded-t-lg active hover:text-lamaPurple hover:border-lamaPurple transition-all';
+    }
+</script>
+{% endblock %}

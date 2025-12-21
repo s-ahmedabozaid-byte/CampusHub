@@ -5,24 +5,106 @@
 {% block content %}
 <div class="max-w-4xl mx-auto">
     <div class="mb-8">
-        <h1 class="text-3xl font-bold text-gray-800">Website Settings</h1>
-        <p class="text-gray-600 mt-1">Manage your application preferences.</p>
+        <h1 class="text-3xl font-bold text-gray-800">Settings</h1>
+        <p class="text-gray-600 mt-1">Manage your account preferences and security.</p>
     </div>
 
-    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-        <div class="text-center py-12">
-            <div class="w-16 h-16 bg-lamaSkyLight rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-lamaSky" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+    <!-- Profile Settings -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mb-8">
+        <div class="p-6 border-b border-gray-100 bg-gray-50">
+            <h2 class="text-lg font-bold text-gray-800 flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-lamaPurple" viewBox="0 0 20 20"
+                    fill="currentColor">
+                    <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+                        clip-rule="evenodd" />
                 </svg>
-            </div>
-            <h3 class="text-lg font-medium text-gray-900">Settings Coming Soon</h3>
-            <p class="text-gray-500 mt-2">This feature is currently under development.</p>
+                Profile Information
+            </h2>
         </div>
+        <form action="{{ url_for('user.settings') }}" method="POST" class="p-6 space-y-4">
+            <input type="hidden" name="action" value="update_profile">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Email Address</label>
+                    <input type="email" name="email" value="{{ user.email }}" required
+                        class="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-lamaPurple/50">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Username</label>
+                    <input type="text" name="username" value="{{ user.username or '' }}"
+                        class="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-lamaPurple/50">
+                </div>
+            </div>
+            <div class="pt-2">
+                <button type="submit"
+                    class="px-6 py-2 bg-lamaPurple text-white rounded-lg hover:bg-indigo-600 font-medium transition-colors">
+                    Save Profile
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Security Settings -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mb-8">
+        <div class="p-6 border-b border-gray-100 bg-gray-50">
+            <h2 class="text-lg font-bold text-gray-800 flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-500" viewBox="0 0 20 20"
+                    fill="currentColor">
+                    <path fill-rule="evenodd"
+                        d="M2.166 10.3c.62-2.28 2.38-3.747 4.887-3.931V6a5 5 0 0110 0v.369c2.507.184 4.267 1.651 4.887 3.93-3.739.02-7.258.995-10.468 2.656C8.807 11.235 5.23 10.3 2.166 10.3zm12.986 6.007a1 1 0 100-2 1 1 0 000 2zm-5 0a1 1 0 100-2 1 1 0 000 2zm-5 0a1 1 0 100-2 1 1 0 000 2z"
+                        clip-rule="evenodd" />
+                </svg>
+                Security
+            </h2>
+        </div>
+        <form action="{{ url_for('user.settings') }}" method="POST" class="p-6 space-y-4">
+            <input type="hidden" name="action" value="change_password">
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-1">New Password</label>
+                <input type="password" name="password" required
+                    class="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50">
+            </div>
+            <div class="pt-2">
+                <button type="submit"
+                    class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium transition-colors">
+                    Change Password
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Preferences -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mb-8">
+        <div class="p-6 border-b border-gray-100 bg-gray-50">
+            <h2 class="text-lg font-bold text-gray-800 flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-lamaYellow" viewBox="0 0 20 20"
+                    fill="currentColor">
+                    <path
+                        d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                </svg>
+                Preferences
+            </h2>
+        </div>
+        <form action="{{ url_for('user.settings') }}" method="POST" class="p-6">
+            <input type="hidden" name="action" value="update_preferences">
+            <div class="flex items-center gap-3">
+                <div class="flex items-center h-5">
+                    <input id="email_notifs" name="receive_email_notifications" type="checkbox" value="true" {% if
+                        user.receive_email_notifications %}checked{% endif %}
+                        class="w-4 h-4 text-lamaYellow border-gray-300 rounded focus:ring-lamaYellow">
+                </div>
+                <div class="text-sm">
+                    <label for="email_notifs" class="font-medium text-gray-700">Receive Email Notifications</label>
+                    <p class="text-gray-500">Get updates about new events and tasks.</p>
+                </div>
+            </div>
+            <div class="pt-6">
+                <button type="submit"
+                    class="px-6 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-900 font-medium transition-colors">
+                    Save Preferences
+                </button>
+            </div>
+        </form>
     </div>
 </div>
 {% endblock %}

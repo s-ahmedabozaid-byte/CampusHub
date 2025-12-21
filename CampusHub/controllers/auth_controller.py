@@ -16,6 +16,10 @@ def register():
         password = request.form.get('password')
         role = request.form.get('role')
         
+        if not email or not password:
+            flash('Email and password are required')
+            return redirect(url_for('auth.register'))
+
         if User.query.filter_by(email=email).first():
             flash('Email already registered')
             return redirect(url_for('auth.register'))
@@ -38,14 +42,6 @@ def register_admin():
     if request.method == 'POST':
         email = request.form.get('email')
         password = request.form.get('password')
-        secret_key = request.form.get('secret_key')
-        
-        # Hardcoded secret key for demonstration
-        ADMIN_SECRET_KEY = 'campusadmin'
-        
-        if secret_key != ADMIN_SECRET_KEY:
-            flash('Invalid secret key.', 'error')
-            return redirect(url_for('auth.register_admin'))
             
         if User.query.filter_by(email=email).first():
             flash('Email already registered', 'error')
@@ -69,6 +65,11 @@ def login():
     if request.method == 'POST':
         email = request.form.get('email')
         password = request.form.get('password')
+
+        if not email or not password:
+            flash('Email and password are required')
+            return redirect(url_for('auth.login'))
+
         user = User.query.filter_by(email=email).first()
         
         if user is None or not user.check_password(password):

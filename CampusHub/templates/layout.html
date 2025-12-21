@@ -27,6 +27,54 @@
         body {
             font-family: 'Inter', sans-serif;
         }
+
+        /* Custom Scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(156, 163, 175, 0.5);
+            border-radius: 10px;
+            display: none;
+        }
+
+        .custom-scrollbar:hover::-webkit-scrollbar-thumb {
+            display: block;
+        }
+
+        /* Sidebar Transition */
+        .sidebar-expanded {
+            width: 16rem;
+            /* w-64 */
+        }
+
+        .sidebar-collapsed {
+            width: 5rem;
+            /* w-20 */
+        }
+
+        .sidebar-collapsed .sidebar-label {
+            opacity: 0;
+            width: 0;
+            display: none;
+        }
+
+        .sidebar-collapsed .logo-text {
+            display: none;
+        }
+
+        .sidebar-collapsed .logo-icon {
+            display: flex;
+        }
+
+        .logo-icon {
+            display: none;
+        }
     </style>
 </head>
 
@@ -34,89 +82,186 @@
     <div class="flex h-screen overflow-hidden">
         <!-- Sidebar -->
         {% if current_user.is_authenticated %}
-        <aside
-            class="w-64 bg-gray-900 border-r border-gray-800 hidden md:flex flex-col text-white transition-all duration-300">
-            <div class="h-16 flex items-center justify-center border-b border-gray-800">
+        <aside id="sidebar"
+            class="sidebar-expanded bg-gray-900 border-r border-gray-800 hidden md:flex flex-col text-white transition-all duration-300 relative z-20">
+
+            <!-- Logo area -->
+            <div class="h-16 flex items-center justify-center border-b border-gray-800 overflow-hidden relative">
                 <a href="{{ url_for('user.dashboard') }}"
-                    class="text-2xl font-bold text-white flex items-center gap-2 hover:text-lamaSky transition-colors duration-300">
+                    class="logo-text text-2xl font-bold text-white flex items-center gap-2 hover:text-lamaSky transition-colors duration-300 whitespace-nowrap">
                     <span class="text-lamaPurple">Campus</span>Hub
                 </a>
+                <a href="{{ url_for('user.dashboard') }}"
+                    class="logo-icon w-10 h-10 bg-lamaPurple text-white rounded-lg items-center justify-center font-bold text-xl">
+                    CH
+                </a>
+
+                <!-- Toggle Button -->
+                <button onclick="toggleSidebar()"
+                    class="absolute right-2 top-1/2 transform -translate-y-1/2 p-1 rounded-md text-gray-400 hover:bg-gray-800 hover:text-white transition-colors">
+                    <svg id="collapseIcon" xmlns="http://www.w3.org/2000/svg"
+                        class="h-5 w-5 transition-transform duration-300" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
+                    </svg>
+                </button>
             </div>
-            <nav class="flex-1 overflow-y-auto py-4">
-                <ul class="space-y-1 px-2">
+
+            <nav class="flex-1 overflow-y-auto py-4 custom-scrollbar overflow-x-hidden">
+                <ul class="space-y-2 px-3">
                     <li>
                         <a href="{{ url_for('user.dashboard') }}"
-                            class="flex items-center px-4 py-2 text-gray-300 hover:bg-gray-800 hover:text-lamaSky rounded-md transition-all duration-300">
-                            <span class="font-medium">Dashboard</span>
+                            class="flex items-center px-3 py-3 text-gray-300 hover:bg-gray-800 hover:text-lamaSky rounded-xl transition-all duration-300 group"
+                            title="Dashboard">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 flex-shrink-0" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                            </svg>
+                            <span
+                                class="sidebar-label font-medium ml-3 whitespace-nowrap overflow-hidden">Dashboard</span>
                         </a>
                     </li>
                     {% if current_user.role == 'admin' %}
                     <li>
                         <a href="{{ url_for('admin.users_list') }}"
-                            class="flex items-center px-4 py-2 text-gray-300 hover:bg-gray-800 hover:text-lamaPurple rounded-md transition-all duration-300">
-                            <span class="font-medium">Users</span>
+                            class="flex items-center px-3 py-3 text-gray-300 hover:bg-gray-800 hover:text-lamaPurple rounded-xl transition-all duration-300 group"
+                            title="Users">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 flex-shrink-0" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                            </svg>
+                            <span class="sidebar-label font-medium ml-3 whitespace-nowrap overflow-hidden">Users</span>
                         </a>
                     </li>
                     {% endif %}
                     <li>
                         <a href="{{ url_for('event.list_events') }}"
-                            class="flex items-center px-4 py-2 text-gray-300 hover:bg-gray-800 hover:text-lamaYellow rounded-md transition-all duration-300">
-                            <span class="font-medium">Events</span>
+                            class="flex items-center px-3 py-3 text-gray-300 hover:bg-gray-800 hover:text-lamaYellow rounded-xl transition-all duration-300 group"
+                            title="Events">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 flex-shrink-0" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                            <span class="sidebar-label font-medium ml-3 whitespace-nowrap overflow-hidden">Events</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('course.index') }}"
+                            class="flex items-center px-3 py-3 text-gray-300 hover:bg-gray-800 hover:text-blue-400 rounded-xl transition-all duration-300 group"
+                            title="Courses">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 flex-shrink-0" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                            </svg>
+                            <span
+                                class="sidebar-label font-medium ml-3 whitespace-nowrap overflow-hidden">Courses</span>
                         </a>
                     </li>
                     <li>
                         <a href="{{ url_for('task.list_tasks') }}"
-                            class="flex items-center px-4 py-2 text-gray-300 hover:bg-gray-800 hover:text-pink-400 rounded-md transition-all duration-300">
-                            <span class="font-medium">My Tasks</span>
+                            class="flex items-center px-3 py-3 text-gray-300 hover:bg-gray-800 hover:text-pink-400 rounded-xl transition-all duration-300 group"
+                            title="My Tasks">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 flex-shrink-0" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                            </svg>
+                            <span class="sidebar-label font-medium ml-3 whitespace-nowrap overflow-hidden">My
+                                Tasks</span>
                         </a>
                     </li>
                     <li>
                         <a href="{{ url_for('announcement.list_announcements') }}"
-                            class="flex items-center px-4 py-2 text-gray-300 hover:bg-gray-800 hover:text-green-400 rounded-md transition-all duration-300">
-                            <span class="font-medium">Announcements</span>
+                            class="flex items-center px-3 py-3 text-gray-300 hover:bg-gray-800 hover:text-green-400 rounded-xl transition-all duration-300 group"
+                            title="Announcements">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 flex-shrink-0" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
+                            </svg>
+                            <span
+                                class="sidebar-label font-medium ml-3 whitespace-nowrap overflow-hidden">Announcements</span>
                         </a>
                     </li>
                     {% if current_user.role == 'admin' %}
                     <li>
                         <a href="{{ url_for('announcement.admin_list') }}"
-                            class="flex items-center px-4 py-2 text-gray-300 hover:bg-gray-800 hover:text-lamaPurple rounded-md transition-all duration-300">
-                            <span class="font-medium">Manage Announcements</span>
+                            class="flex items-center px-3 py-3 text-gray-300 hover:bg-gray-800 hover:text-lamaPurple rounded-xl transition-all duration-300 group"
+                            title="Manage Announcements">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 flex-shrink-0" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                            <span class="sidebar-label font-medium ml-3 whitespace-nowrap overflow-hidden">Manage
+                                Announcements</span>
                         </a>
                     </li>
                     <li>
                         <a href="{{ url_for('admin.logs') }}"
-                            class="flex items-center px-4 py-2 text-gray-300 hover:bg-gray-800 hover:text-blue-400 rounded-md transition-all duration-300">
-                            <span class="font-medium">Activity Logs</span>
+                            class="flex items-center px-3 py-3 text-gray-300 hover:bg-gray-800 hover:text-blue-400 rounded-xl transition-all duration-300 group"
+                            title="Activity Logs">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 flex-shrink-0" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                            <span class="sidebar-label font-medium ml-3 whitespace-nowrap overflow-hidden">Activity
+                                Logs</span>
                         </a>
                     </li>
                     {% endif %}
                     <li>
                         <a href="{{ url_for('user.settings') }}"
-                            class="flex items-center px-4 py-2 text-gray-300 hover:bg-gray-800 hover:text-lamaSky rounded-md transition-all duration-300">
-                            <span class="font-medium">Settings</span>
+                            class="flex items-center px-3 py-3 text-gray-300 hover:bg-gray-800 hover:text-lamaSky rounded-xl transition-all duration-300 group"
+                            title="Settings">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 flex-shrink-0" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                            <span
+                                class="sidebar-label font-medium ml-3 whitespace-nowrap overflow-hidden">Settings</span>
                         </a>
                     </li>
-                    <ul class="space-y-1 px-2">
-                        <li>
-                            <button onclick="document.getElementById('feedbackModal').classList.remove('hidden')"
-                                class="w-full flex items-center px-4 py-2 text-gray-300 hover:bg-gray-800 hover:text-indigo-400 rounded-md transition-all duration-300">
-                                <span class="font-medium">Send Feedback</span>
-                            </button>
-                        </li>
+                    <li>
+                        <button onclick="document.getElementById('feedbackModal').classList.remove('hidden')"
+                            class="w-full flex items-center px-3 py-3 text-gray-300 hover:bg-gray-800 hover:text-indigo-400 rounded-xl transition-all duration-300 group"
+                            title="Send Feedback">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 flex-shrink-0" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+                            </svg>
+                            <span
+                                class="sidebar-label font-medium ml-3 whitespace-nowrap overflow-hidden">Feedback</span>
+                        </button>
+                    </li>
+                </ul>
 
             </nav>
-            <div class="p-4 border-t border-gray-800">
+            <div class="p-4 border-t border-gray-800 overflow-hidden">
                 <div class="flex items-center gap-3">
                     <div
-                        class="w-10 h-10 rounded-full bg-lamaPurple flex items-center justify-center text-white font-bold">
+                        class="flex-shrink-0 w-10 h-10 rounded-full bg-lamaPurple flex items-center justify-center text-white font-bold cursor-pointer hover:opacity-80 transition-opacity">
                         {{ current_user.email[0].upper() }}
                     </div>
-                    <div class="flex-1 min-w-0">
+                    <div class="flex-1 min-w-0 sidebar-label overflow-hidden">
                         <p class="text-sm font-medium text-white truncate">{{ current_user.email }}</p>
                         <p class="text-xs text-gray-400 truncate">{{ current_user.role.capitalize() }}</p>
                     </div>
                 </div>
-                <div class="mt-4 flex gap-2">
+                <!-- Mini Action Buttons -->
+                <div class="mt-4 flex gap-2 sidebar-label overflow-hidden">
                     <a href="{{ url_for('user.profile') }}"
                         class="flex-1 text-center px-3 py-1.5 text-xs font-medium text-gray-300 bg-gray-800 rounded-md hover:bg-gray-700 transition-all duration-300">Profile</a>
                     <a href="{{ url_for('auth.logout') }}"
@@ -231,6 +376,21 @@
     </div>
 
     <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const collapseIcon = document.getElementById('collapseIcon');
+
+            sidebar.classList.toggle('sidebar-expanded');
+            sidebar.classList.toggle('sidebar-collapsed');
+
+            // Rotate icon
+            if (sidebar.classList.contains('sidebar-collapsed')) {
+                collapseIcon.classList.add('rotate-180');
+            } else {
+                collapseIcon.classList.remove('rotate-180');
+            }
+        }
+
         function toggleNotifications() {
             const dropdown = document.getElementById('notificationDropdown');
             dropdown.classList.toggle('hidden');

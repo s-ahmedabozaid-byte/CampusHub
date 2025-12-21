@@ -36,3 +36,16 @@ class Event(db.Model):
         if self.capacity is None:
             return False
         return self.attendee_count >= self.capacity
+
+class Interest(db.Model):
+    __tablename__ = 'interests'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    event_id = db.Column(db.Integer, db.ForeignKey('events.id'), nullable=False)
+    
+    # Unique constraint to prevent double liking
+    __table_args__ = (db.UniqueConstraint('user_id', 'event_id', name='unique_user_event_interest'),)
+
+    user = db.relationship('User', backref=db.backref('interests', lazy='dynamic'))
+    event = db.relationship('Event', backref=db.backref('interests', lazy='dynamic'))
+
