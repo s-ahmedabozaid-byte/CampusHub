@@ -11,11 +11,17 @@ class User(UserMixin, db.Model):
     password_hash = db.Column(db.String(128))
     role = db.Column(db.String(20), default='student') # student, teacher, admin
     is_active = db.Column(db.Boolean, default=True)
+    receive_email_notifications = db.Column(db.Boolean, default=True)
+    
+    # Relationship: Tasks (One-to-Many)
+    tasks = db.relationship('Task', backref='user', lazy=True)
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
 
     def check_password(self, password):
+        if not self.password_hash or not password:
+            return False
         return check_password_hash(self.password_hash, password)
 
     def __repr__(self):

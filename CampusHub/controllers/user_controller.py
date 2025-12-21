@@ -29,7 +29,17 @@ def dashboard():
                              total_users=total_users,
                              total_events=total_events,
                              pending_events=pending_events)
+    elif current_user.role == 'instructor':
+        # Instructor Dashboard
+        return render_template('user/dashboard.html', user=current_user, is_instructor=True)
     return render_template('user/dashboard.html', user=current_user)
+
+@user_bp.route('/instructor/dashboard')
+@login_required
+def instructor_dashboard():
+    if current_user.role != 'instructor':
+        return redirect(url_for('user.dashboard'))
+    return render_template('user/dashboard.html', user=current_user, is_instructor=True)
 
 @user_bp.route('/profile', methods=['GET', 'POST'])
 @login_required
@@ -63,9 +73,49 @@ def profile():
         
     return render_template('user/profile.html', user=current_user)
 
-@user_bp.route('/settings')
+@user_bp.route('/settings', methods=['GET', 'POST'])
 @login_required
 def settings():
+    if request.method == 'POST':
+        action = request.form.get('action')
+        
+        if action == 'update_profile':
+            email = request.form.get('email')
+            username = request.form.get('username')
+            
+            if not email:
+                flash('Email is required.', 'error')
+            else:
+                existing_user = User.query.filter_by(email=email).first()
+                if existing_user and existing_user.id != current_user.id:
+                    flash('Email already registered.', 'error')
+                else:
+                    current_user.email = email
+                    current_user.username = username
+                    try:
+                        db.session.commit()
+                        flash('Profile updated successfully!', 'success')
+                    except Exception:
+                        db.session.rollback()
+                        flash('Error updating profile.', 'error')
+                        
+        elif action == 'change_password':
+            password = request.form.get('password')
+            if password:
+                current_user.set_password(password)
+                db.session.commit()
+                flash('Password changed successfully!', 'success')
+            else:
+                flash('Password cannot be empty.', 'error')
+                
+        elif action == 'update_preferences':
+            receive_email = request.form.get('receive_email_notifications') == 'true'
+            current_user.receive_email_notifications = receive_email
+            db.session.commit()
+            flash('Preferences saved.', 'success')
+            
+        return redirect(url_for('user.settings'))
+        
     return render_template('user/settings.html', user=current_user)
 
 @user_bp.route('/notifications/mark-read/<int:notification_id>', methods=['POST'])
